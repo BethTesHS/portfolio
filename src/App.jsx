@@ -360,14 +360,14 @@ const Portfolio = () => {
         </AnimatePresence>
       </div>
 
-      <motion.button 
+      {/* <motion.button 
         className="dev-toggle"
         onClick={() => setShowJson(!showJson)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
         {showJson ? <Eye size={24} /> : <FileJson size={24} />}
-      </motion.button>
+      </motion.button> */}
     </div>
   );
 };

@@ -401,7 +401,7 @@ section {
 ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
 /* Dev Toggle */
-/* .dev-toggle {
+.dev-toggle {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
@@ -417,7 +417,7 @@ section {
   cursor: pointer;
   z-index: 1000;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-} */
+}
 
 /* Footer */
 footer {
