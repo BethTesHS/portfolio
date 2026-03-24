@@ -336,6 +336,7 @@ body {
 }
 
 .card-header h3 { font-size: 1.4rem; color: var(--text-main); }
+
 .company { font-family: 'Fira Code', monospace; color: var(--primary); font-size: 0.95rem; }
 .date {
   background: var(--surface-hover);
