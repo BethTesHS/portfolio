@@ -1,10 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useMotionTemplate, useMotionValue } from 'framer-motion';
+import { motion, AnimatePresence, useMotionTemplate, useMotionValue, useTransform } from 'framer-motion';
 import { 
   Mail, Github, Linkedin, Terminal, FileJson, 
-  Eye, Briefcase, Code2, Sun, Moon 
+  Eye, Briefcase, Code2 
 } from 'lucide-react';
 import './App.css';
+
+// Custom SVG Lightbulb Component - Hanging from the ceiling
+const CustomBulb = ({ isOn }) => (
+  <svg 
+    width="36" 
+    height="64" /* Increased from 48 to make room for the longer base */
+    viewBox="0 -15 24 47" /* Shifted the viewBox up to prevent the longer rod from being cut off */
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      filter: isOn ? 'drop-shadow(0px 0px 12px rgba(251, 191, 36, 0.6))' : 'drop-shadow(0px 0px 2px rgba(0,0,0,0.3))',
+      transition: 'all 0.4s ease'
+    }}
+  >
+    <g transform="rotate(180 12 16)">
+      <path 
+        d="M4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 15.6965 17.4811 18.9103 14 19.8V23C14 23.5523 13.5523 24 13 24H11C10.4477 24 10 23.5523 10 23V19.8C6.51888 18.9103 4 15.6965 4 12Z" 
+        fill={isOn ? "rgba(251, 191, 36, 0.15)" : "var(--surface)"}
+        stroke={isOn ? "#fbbf24" : "var(--text-muted)"} 
+        strokeWidth="1.5"
+      />
+      <path 
+        d="M10 10 L11.5 11L12.5 11L14 10" 
+        stroke={isOn ? "#fbbf24" : "var(--text-muted)"} 
+        strokeWidth="1.5" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      <path 
+        d="M12 11V15" 
+        stroke={isOn ? "#fbbf24" : "var(--text-muted)"} 
+        strokeWidth="1.5" 
+        strokeLinecap="round" 
+      />
+      <path d="M10 24H14V25.5H10V24Z" fill="var(--text-muted)" />
+      <path d="M10.5 26.5H13.5V28H10.5V26.5Z" fill="var(--text-muted)" />
+      <path d="M11 29H13V45.5C13 46.0523 12.5523 46.5 12 46.5C11.4477 46.5 11 46.0523 11 45.5V29Z" fill="var(--text-main)" />
+    </g>
+  </svg>
+);
 
 const Portfolio = () => {
   const [showJson, setShowJson] = useState(false);
@@ -13,6 +53,15 @@ const Portfolio = () => {
   
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+
+  // Physics states for the pull chain
+  const dragX = useMotionValue(0);
+  const dragY = useMotionValue(0);
+  
+  // The string starts from the ceiling at X=44, Y=0. 
+  // The knob rests at X=44, Y=80.
+  const lineX2 = useTransform(dragX, (x) => x + 44); 
+  const lineY2 = useTransform(dragY, (y) => y + 80); 
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -26,7 +75,6 @@ const Portfolio = () => {
     mouseY.set(clientY - top);
   }
 
-  // Toggle Body Class for Light Mode Theme
   useEffect(() => {
     if (isLightMode) {
       document.body.classList.add('light-mode');
@@ -101,8 +149,6 @@ const Portfolio = () => {
 
   return (
     <div className="portfolio-container" onMouseMove={handleMouseMove}>
-      
-      {/* Interactive Cursor Spotlight */}
       <motion.div
         className="pointer-events-none fixed inset-0 z-0"
         style={{
@@ -120,7 +166,6 @@ const Portfolio = () => {
         }}
       />
 
-      {/* FULL WIDTH NAVBAR OUTSIDE THE WRAPPER */}
       <nav className={`full-width-nav ${isScrolled ? "nav-scrolled" : ""}`}>
         <div className="nav-inner">
           <motion.a 
@@ -137,13 +182,54 @@ const Portfolio = () => {
             <a href="#skills" onClick={(e) => handleNavClick(e, 'skills')} className="nav-link">Skills</a>
             <a href={`mailto:${personalInfo.email}`} className="nav-link">Contact</a>
             
-            <button 
-              className="theme-toggle" 
-              onClick={() => setIsLightMode(!isLightMode)}
-              aria-label="Toggle Theme"
-            >
-              {isLightMode ? <Moon size={20} /> : <Sun size={20} />}
-            </button>
+            {/* UPDATED: Ceiling & Side Pull Chain */}
+            <div className="pull-chain-wrapper">
+              
+              {/* The ceiling boundary line */}
+              <div className="ceiling-bar"></div>
+
+              {/* Bulb positioned on the left side */}
+              <div className="bulb-position">
+                <CustomBulb isOn={isLightMode} />
+              </div>
+              
+              {/* The chain starting from the ceiling beside the bulb */}
+              <svg className="chain-svg-canvas">
+                <motion.line 
+                  x1="44" y1="0"  /* Starts at ceiling, offset to the right */
+                  x2={lineX2} 
+                  y2={lineY2} 
+                  stroke="var(--text-muted)" 
+                  strokeWidth="2" 
+                  strokeDasharray="2 4"
+                  strokeLinecap="round"
+                />
+              </svg>
+
+              <motion.div
+                className="chain-knob-draggable"
+                style={{
+                  x: dragX,
+                  y: dragY,
+                  backgroundColor: isLightMode ? 'var(--primary)' : 'var(--text-main)',
+                }}
+                drag
+                dragSnapToOrigin={true}
+                dragConstraints={{ top: 0, bottom: 50, left: -50, right: 50 }}
+                dragElastic={0.4}
+                transition={{ type: "spring", stiffness: 150, damping: 3, mass: 0.6 }}
+                whileTap={{ cursor: 'grabbing', scale: 1.1 }}
+                onDragEnd={(e, info) => {
+                  if (info.offset.y > 20) {
+                    setIsLightMode(prev => !prev);
+                    if (window.navigator?.vibrate) {
+                       window.navigator.vibrate(40);
+                    }
+                  }
+                }}
+              />
+            </div>
+
           </div>
         </div>
       </nav>
@@ -206,18 +292,11 @@ const Portfolio = () => {
                 </motion.div>
               </header>
 
-              <motion.section 
-                id="experience"
-                variants={slideDownVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-              >
+              <motion.section id="experience" variants={slideDownVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}>
                 <h2 className="section-title">
                   <Briefcase size={32} style={{ display: 'inline', marginRight: '15px', verticalAlign: 'bottom', color: 'var(--primary)' }}/>
                   Where I've Worked
                 </h2>
-                
                 <div className="experience-grid">
                   {experience.map((job, index) => (
                     <div key={index} className="card">
@@ -238,13 +317,7 @@ const Portfolio = () => {
                 </div>
               </motion.section>
 
-              <motion.section 
-                id="skills"
-                variants={slideDownVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-              >
+              <motion.section id="skills" variants={slideDownVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}>
                 <h2 className="section-title">
                   <Code2 size={32} style={{ display: 'inline', marginRight: '15px', verticalAlign: 'bottom', color: 'var(--accent)' }}/>
                   Technical Arsenal
