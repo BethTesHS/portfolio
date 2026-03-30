@@ -76,6 +76,7 @@ body {
   margin-bottom: 3rem;
   background: linear-gradient(to right, var(--text-main), var(--text-muted));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
@@ -83,8 +84,8 @@ body {
 .gradient-text {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ========================================= */
@@ -456,4 +457,35 @@ footer {
   min-height: 100vh;
   position: relative;
   z-index: 1; 
+}
+
+.pull-hint-box {
+  position: absolute;
+  right: 70px; /* Positions it to the left of the chain */
+  top: 60px;
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: var(--text-main);
+  font-family: 'Fira Code', monospace; /* Matches your terminal-badge style */
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+/* Subtle accent highlight to match your "Where I've Worked" cards */
+.pull-hint-box::before {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 60%;
+  background: var(--primary);
 }

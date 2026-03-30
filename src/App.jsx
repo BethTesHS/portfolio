@@ -51,6 +51,7 @@ const Portfolio = () => {
   const [showJson, setShowJson] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // Added state for the hover hint
 
   // Physics states for the pull chain
   const dragX = useMotionValue(0);
@@ -158,7 +159,25 @@ const Portfolio = () => {
             <a href="#skills" onClick={(e) => handleNavClick(e, 'skills')} className="nav-link">Skills</a>
             <a href={`mailto:${personalInfo.email}`} className="nav-link">Contact</a>
             
-            <div className="pull-chain-wrapper">
+            <div 
+              className="pull-chain-wrapper"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {/* Animated Hint Box */}
+              <AnimatePresence>
+                {isHovered && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    className="pull-hint-box"
+                  >
+                    Pull to turn {isLightMode ? 'off' : 'on'} the light
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <div className="ceiling-bar"></div>
               <div className="bulb-position">
                 <CustomBulb isOn={isLightMode} />
