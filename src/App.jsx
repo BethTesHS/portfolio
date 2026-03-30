@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useMotionTemplate, useMotionValue, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { 
-  Mail, Github, Linkedin, Terminal, FileJson, 
-  Eye, Briefcase, Code2 
+  Mail, Github, Linkedin, Terminal, 
+  Briefcase, Code2 
 } from 'lucide-react';
+import TechBackground from './TechBackground';
 import './App.css';
 
-// Custom SVG Lightbulb Component - Hanging from the ceiling
+// Custom SVG Lightbulb Component
 const CustomBulb = ({ isOn }) => (
   <svg 
     width="36" 
-    height="64" /* Increased from 48 to make room for the longer base */
-    viewBox="0 -15 24 47" /* Shifted the viewBox up to prevent the longer rod from being cut off */
+    height="64"
+    viewBox="0 -15 24 47"
     fill="none" 
     xmlns="http://www.w3.org/2000/svg"
     style={{
@@ -50,16 +51,11 @@ const Portfolio = () => {
   const [showJson, setShowJson] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
-  
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
 
   // Physics states for the pull chain
   const dragX = useMotionValue(0);
   const dragY = useMotionValue(0);
   
-  // The string starts from the ceiling at X=44, Y=0. 
-  // The knob rests at X=44, Y=80.
   const lineX2 = useTransform(dragX, (x) => x + 44); 
   const lineY2 = useTransform(dragY, (y) => y + 80); 
 
@@ -68,12 +64,6 @@ const Portfolio = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  function handleMouseMove({ currentTarget, clientX, clientY }) {
-    const { left, top } = currentTarget.getBoundingClientRect();
-    mouseX.set(clientX - left);
-    mouseY.set(clientY - top);
-  }
 
   useEffect(() => {
     if (isLightMode) {
@@ -148,23 +138,9 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="portfolio-container" onMouseMove={handleMouseMove}>
-      <motion.div
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              650px circle at ${mouseX}px ${mouseY}px,
-              var(--spotlight),
-              transparent 80%
-            )
-          `,
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
-          pointerEvents: 'none',
-          zIndex: 0
-        }}
-      />
+    <div className="portfolio-container">
+      {/* Animated Tech Pattern Background */}
+      <TechBackground />
 
       <nav className={`full-width-nav ${isScrolled ? "nav-scrolled" : ""}`}>
         <div className="nav-inner">
@@ -182,21 +158,15 @@ const Portfolio = () => {
             <a href="#skills" onClick={(e) => handleNavClick(e, 'skills')} className="nav-link">Skills</a>
             <a href={`mailto:${personalInfo.email}`} className="nav-link">Contact</a>
             
-            {/* UPDATED: Ceiling & Side Pull Chain */}
             <div className="pull-chain-wrapper">
-              
-              {/* The ceiling boundary line */}
               <div className="ceiling-bar"></div>
-
-              {/* Bulb positioned on the left side */}
               <div className="bulb-position">
                 <CustomBulb isOn={isLightMode} />
               </div>
               
-              {/* The chain starting from the ceiling beside the bulb */}
               <svg className="chain-svg-canvas">
                 <motion.line 
-                  x1="44" y1="0"  /* Starts at ceiling, offset to the right */
+                  x1="44" y1="0"
                   x2={lineX2} 
                   y2={lineY2} 
                   stroke="var(--text-muted)" 
@@ -229,12 +199,10 @@ const Portfolio = () => {
                 }}
               />
             </div>
-
           </div>
         </div>
       </nav>
 
-      {/* CENTERED CONTENT WRAPPER */}
       <div className="content-wrapper" style={{ position: 'relative', zIndex: 1 }}>
         <AnimatePresence mode="wait">
           {!showJson && (
@@ -244,7 +212,6 @@ const Portfolio = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              
               <header className="hero">
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
@@ -262,8 +229,8 @@ const Portfolio = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  Building digital <br />
-                  <span className="gradient-text">experiences.</span>
+                  Fullstack<br />
+                  <span className="gradient-text">Software Developer</span>
                 </motion.h1>
                 
                 <motion.p 
@@ -335,39 +302,10 @@ const Portfolio = () => {
                 <p>Designed & Built by {personalInfo.name}</p>
                 <p style={{ opacity: 0.5, marginTop: '8px' }}>&copy; {new Date().getFullYear()} All rights reserved.</p>
               </footer>
-
             </motion.div>
           )}
         </AnimatePresence>
-
-        <AnimatePresence>
-           {showJson && (
-             <motion.div
-                className="json-view"
-                style={{ width: '100%', padding: '4rem 0' }}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-             >
-                <div style={{ background: '#0d0d12', padding: '2rem', borderRadius: '12px', textAlign: 'left', fontFamily: 'monospace' }}>
-                    <p style={{ color: 'var(--primary)' }}>// Developer Data</p>
-                    <pre style={{ color: '#e2e8f0', marginTop: '1rem' }}>
-                      {JSON.stringify({ name: personalInfo.name, skills }, null, 2)}
-                    </pre>
-                </div>
-             </motion.div>
-           )}
-        </AnimatePresence>
       </div>
-
-      {/* <motion.button 
-        className="dev-toggle"
-        onClick={() => setShowJson(!showJson)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        {showJson ? <Eye size={24} /> : <FileJson size={24} />}
-      </motion.button> */}
     </div>
   );
 };
