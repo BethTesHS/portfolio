@@ -50,7 +50,6 @@ body {
   transition: background-color 0.4s ease, color 0.4s ease;
 
   margin: 0 auto;
-  /* max-width: 1000px;  */
   position: relative;
   justify-content: center;
   min-height: 100vh;
@@ -205,6 +204,7 @@ body {
 .chain-knob-draggable:hover {
   filter: brightness(1.2);
 }
+
 /* Hero Section */
 .hero {
   min-height: 85vh;
@@ -429,12 +429,6 @@ footer {
   font-family: 'Fira Code', monospace;
 }
 
-@media (max-width: 768px) {
-  .nav-links { display: none; }
-  .experience-grid::before { left: 16px; }
-  .card { margin-left: 40px; }
-  .card::before { left: -29px; }
-}
 /* ---- Background Tech Art ----- */
 .tech-bg-container {
   position: fixed;
@@ -452,16 +446,9 @@ footer {
   height: 100%;
 }
 
-/* Portfolio container to ensure background elements stay behind */
-.portfolio-container {
-  min-height: 100vh;
-  position: relative;
-  z-index: 1; 
-}
-
 .pull-hint-box {
   position: absolute;
-  right: 70px; /* Positions it to the left of the chain */
+  right: 70px;
   top: 60px;
   background: var(--surface);
   backdrop-filter: blur(8px);
@@ -470,7 +457,7 @@ footer {
   padding: 8px 14px;
   border-radius: 8px;
   color: var(--text-main);
-  font-family: 'Fira Code', monospace; /* Matches your terminal-badge style */
+  font-family: 'Fira Code', monospace;
   font-size: 0.75rem;
   white-space: nowrap;
   pointer-events: none;
@@ -478,7 +465,6 @@ footer {
   z-index: 10;
 }
 
-/* Subtle accent highlight to match your "Where I've Worked" cards */
 .pull-hint-box::before {
   content: '';
   position: absolute;
@@ -488,4 +474,20 @@ footer {
   width: 2px;
   height: 60%;
   background: var(--primary);
+}
+
+
+/* ========================================= */
+/* MOBILE RESPONSIVENESS                     */
+/* ========================================= */
+@media (max-width: 768px) {
+  /* Only hide the text links, leave the pull chain visible */
+  .nav-links .nav-link { display: none; }
+  
+  /* Hide the hover hint box on touch devices */
+  .pull-hint-box { display: none; }
+
+  .experience-grid::before { left: 16px; }
+  .card { margin-left: 40px; }
+  .card::before { left: -29px; }
 }
