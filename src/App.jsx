@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { 
   Mail, Github, Linkedin, Terminal, 
-  Briefcase, Code2 
+  Briefcase, Code2, Folder, ChevronDown 
 } from 'lucide-react';
 import TechBackground from './TechBackground';
 import './App.css';
@@ -51,7 +51,8 @@ const Portfolio = () => {
   const [showJson, setShowJson] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
-  const [isHovered, setIsHovered] = useState(false); // Added state for the hover hint
+  const [isHovered, setIsHovered] = useState(false);
+  const [expandedProject, setExpandedProject] = useState(null);
 
   // Physics states for the pull chain
   const dragX = useMotionValue(0);
@@ -84,7 +85,7 @@ const Portfolio = () => {
 
   const personalInfo = {
     name: "Bethelhem Tesfaye Haileselassie",
-    role: "Software Engineer",
+    role: "Fullstack Software Developer",
     email: "bethelhemtesfaye95@gmail.com",
     location: "Nairobi, Kenya",
     linkedin: "https://www.linkedin.com/in/bethelhem-tesfaye-b26277272",
@@ -92,41 +93,81 @@ const Portfolio = () => {
   };
 
   const skills = [
-    "C#", "Java", "Dart", "Flutter", "Laravel", 
-    "Python", "CSS", "JavaScript", "MySQL", 
-    "Azure", "Git", "Figma",  
+    "React", "JavaScript", "HTML", "CSS", "Tailwind CSS", 
+    "Laravel", "PHP", "Python", "C#", "Java", 
+    "Flutter", "Android Studio", 
+    "MySQL", "PostgreSQL", "Supabase", "Firebase", 
+    "Azure", "Vercel", "Kusto Query Language", "Microsoft Bot/Agent Framework", 
+    "Git/GitHub", 
+    "Figma", "Krita", "Clip Studio"
   ];
 
   const experience = [
+    {
+      role: "Software Developer",
+      company: "Kenbright",
+      date: "February 2025 - Present",
+      points: [
+        "Built a full-stack learning platform using React, Node.js, Express, and Tailwind CSS.",
+        "Integrated Supabase for authentication and cloud storage to manage educational resources and PDF modules.",
+        "Implemented interactive user features including an AI-based grading system for quizzes and progress tracking."
+      ],
+      tech: ["React", "Node.js", "Express", "Tailwind CSS", "Supabase", "Gemini AI API"]
+    },
+    {
+      role: "Frontend Software Developer",
+      company: "Homed-UK",
+      date: "February 2025 - Present",
+      points: [
+        "Developed frontend flows using React and TypeScript, ensuring optimized user experiences for distinct persona requirements.",
+        "Implemented UI designs into clean, responsive web pages and components for a high-traffic property platform using Tailwind CSS and Vite.",
+        "Troubleshot and fixed UI bugs across devices and browsers, specifically resolving compatibility issues."
+      ],
+      tech: ["React", "TypeScript", "Tailwind CSS", "Vite"]
+    },
     {
       role: "Software Engineering Intern",
       company: "Microsoft",
       date: "July 2025 - September 2025",
       points: [
-        "Worked with the IDNA team to design core components of an AI-powered diagnostic chatbot.",
-        "Integrated Azure OpenAI and RAG for intelligent error analysis.",
-        "Implemented secure authentication using Microsoft Entra ID."
-      ]
-    },
-    {
-      role: "Web Application Developer",
-      company: "Strathmore University (Lost & Found)",
-      date: "April 2025 - November 2025",
-      points: [
-        "Developed a full-stack Laravel web app for item management.",
-        "Engineered a RAG search endpoint using Gemini AI for image-to-text conversion.",
-        "Built real-time messaging using WebSockets (Reverb/Pusher)."
-      ]
+        "Designed and developed core components of an AI-powered diagnostic chatbot handling build and deployment failures.",
+        "Integrated Azure OpenAI and Azure AI Search to implement RAG for context-aware error analysis.",
+        "Implemented secure authentication and authorization flows using Managed Identity and Microsoft Entra ID."
+      ],
+      tech: ["Azure OpenAI", "Azure AI Search", "RAG", "Microsoft Entra ID"]
     },
     {
       role: "POS System Developer",
       company: "Riset Software & Systems LTD",
       date: "January 2025 - March 2025",
       points: [
-        "Built a full-stack Point of Sale application using Laravel.",
-        "Engineered dynamic inventory control with real-time synchronization."
-      ]
+        "Built a full-stack Point of Sale (POS) application using Laravel and PHP.",
+        "Engineered dynamic inventory control with real-time stock synchronization to prevent discrepancies.",
+        "Integrated interactive charts to visualize data trends and display stock history on an admin dashboard."
+      ],
+      tech: ["Laravel", "PHP", "MySQL", "JavaScript"]
     }
+  ];
+
+  const projects = [
+    {
+      title: "Helo-Me-Find! - A Lost & Found Web Application",
+      tech: ["Laravel", "PHP", "JavaScript", "Gemini AI API", "WebSockets", "Leaflet.js"],
+      description: "Developed a full-stack platform for item management featuring a RAG-based search engine using Gemini AI for image-to-text and vector embeddings. Implemented real-time user messaging via Laravel Broadcasting/Reverb, integrated geospatial mapping for item tracking, and built a QR code generation system.",
+      link: "#" 
+    },
+    {
+      title: "Tembea Kenya - Mobile Application",
+      tech: ["Flutter", "Dart", "Laravel", "Firebase", "MySQL", "Figma"],
+      description: "Designed and developed a mobile application featuring a custom UI/UX framework designed in Figma. Built a robust backend utilizing Laravel, MySQL, and Firebase, integrated third-party services for enhanced scalability, and maintained comprehensive lifecycle documentation.",
+      link: "#"
+    },
+    {
+      title: "Media Downloader Web App",
+      tech: ["Python", "Flask"],
+      description: "Developed a simplified web application to seamlessly download audio and video of media/playlist from platforms like YouTube and Spotify, featuring custom format selection and directory management.",
+      link: "#"
+    },
   ];
 
   const slideDownVariants = {
@@ -156,6 +197,7 @@ const Portfolio = () => {
           
           <div className="nav-links">
             <a href="#experience" onClick={(e) => handleNavClick(e, 'experience')} className="nav-link">Experience</a>
+            <a href="#projects" onClick={(e) => handleNavClick(e, 'projects')} className="nav-link">Projects</a>
             <a href="#skills" onClick={(e) => handleNavClick(e, 'skills')} className="nav-link">Skills</a>
             <a href={`mailto:${personalInfo.email}`} className="nav-link">Contact</a>
             
@@ -279,8 +321,8 @@ const Portfolio = () => {
               </header>
 
               <motion.section id="experience" variants={slideDownVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}>
-                <h2 className="section-title">
-                  <Briefcase size={32} style={{ display: 'inline', marginRight: '15px', verticalAlign: 'bottom', color: 'var(--primary)' }}/>
+                <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <Briefcase size={32} style={{ color: 'var(--primary)' }}/>
                   Where I've Worked
                 </h2>
                 <div className="experience-grid">
@@ -298,14 +340,82 @@ const Portfolio = () => {
                           <li key={i}>{point}</li>
                         ))}
                       </ul>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '16px', borderTop: '1px solid var(--border)', paddingTop: '16px' }}>
+                        {job.tech.map((techItem, techIndex) => (
+                          <span key={techIndex} className="skill-tag" style={{ margin: 0, padding: '4px 10px', fontSize: '0.75rem' }}>
+                            {techItem}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   ))}
                 </div>
               </motion.section>
 
+              <motion.section id="projects" variants={slideDownVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}>
+                <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <Folder size={32} style={{ color: 'var(--primary)' }}/>
+                  Personal Projects
+                </h2>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '30px' }}>
+                  {projects.map((project, index) => {
+                    const isExpanded = expandedProject === index;
+                    return (
+                      <motion.div 
+                        layout
+                        key={index} 
+                        className="card" 
+                        onClick={() => setExpandedProject(isExpanded ? null : index)}
+                        style={{ cursor: 'pointer', padding: '24px', overflow: 'hidden' }}
+                        whileHover={{ scale: 1.01 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <motion.div layout style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '15px' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            <h3 style={{ fontSize: '1.25rem', margin: 0 }}>{project.title}</h3>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                              {project.tech.map((techItem, techIndex) => (
+                                <span key={techIndex} className="skill-tag" style={{ margin: 0, padding: '4px 10px', fontSize: '0.75rem' }}>
+                                  {techItem}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <motion.div 
+                            animate={{ rotate: isExpanded ? 180 : 0 }} 
+                            transition={{ duration: 0.3 }}
+                            style={{ color: 'var(--text-muted)', flexShrink: 0 }}
+                          >
+                            <ChevronDown size={24} />
+                          </motion.div>
+                        </motion.div>
+
+                        <AnimatePresence>
+                          {isExpanded && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                              animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
+                              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                              transition={{ duration: 0.3, ease: 'easeInOut' }}
+                            >
+                              <div style={{ borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
+                                <p style={{ opacity: 0.8, fontSize: '0.95rem', lineHeight: '1.7', margin: 0 }}>
+                                  {project.description}
+                                </p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </motion.section>
+
               <motion.section id="skills" variants={slideDownVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}>
-                <h2 className="section-title">
-                  <Code2 size={32} style={{ display: 'inline', marginRight: '15px', verticalAlign: 'bottom', color: 'var(--accent)' }}/>
+                <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <Code2 size={32} style={{ color: 'var(--accent)' }}/>
                   Technical Arsenal
                 </h2>
                 <div className="skills-grid">
