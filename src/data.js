@@ -67,7 +67,7 @@ export const experience = [
 
 export const projects = [
     {
-      title: "Helo-Me-Find! - A Lost & Found Web Application",
+      title: "Help-Me-Find! - A Lost & Found Web Application",
       tech: ["Laravel", "PHP", "JavaScript", "Gemini AI API", "WebSockets", "Leaflet.js"],
       description: "Developed a full-stack platform for item management featuring a RAG-based search engine using Gemini AI for image-to-text and vector embeddings. Implemented real-time user messaging via Laravel Broadcasting/Reverb, integrated geospatial mapping for item tracking, and built a QR code generation system.",
       link: "#" 
